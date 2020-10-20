@@ -1,0 +1,34 @@
+{
+  "buildFiles": [
+    "D:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Android.mk",
+    "D:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Application.mk"
+  ],
+  "cleanCommands": [
+    "D:\\work\\Android_studio\\SDKs\\ndk\\21.3.6528147\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Android.mk NDK_APPLICATION_MK\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-24 NDK_OUT\u003dD:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\build\\intermediates\\ndkBuild\\release\\lib NDK_APPLICATION_MK:\u003dsrc/main/cpp/Application.mk clean"
+  ],
+  "buildTargetsCommand": "D:\\work\\Android_studio\\SDKs\\ndk\\21.3.6528147\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Android.mk NDK_APPLICATION_MK\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-24 NDK_OUT\u003dD:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\build\\intermediates\\ndkBuild\\release\\lib NDK_APPLICATION_MK:\u003dsrc/main/cpp/Application.mk {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "ImageProcessLib-release-armeabi-v7a": {
+      "buildCommand": "D:\\work\\Android_studio\\SDKs\\ndk\\21.3.6528147\\ndk-build.cmd NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Android.mk NDK_APPLICATION_MK\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-24 NDK_OUT\u003dD:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/build/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003dD:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\build\\intermediates\\ndkBuild\\release\\lib NDK_APPLICATION_MK:\u003dsrc/main/cpp/Application.mk D:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/build/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libImageProcessLib.so",
+      "toolchain": "toolchain-armeabi-v7a",
+      "abi": "armeabi-v7a",
+      "artifactName": "ImageProcessLib",
+      "files": [
+        {
+          "src": "D:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\src\\main\\cpp\\com_processimage_GAPITester.cpp",
+          "flags": "-target armv7-none-linux-androideabi24 -fdata-sections -ffunction-sections -fstack-protector-strong -funwind-tables -no-canonical-prefixes --sysroot D:/work/Android_studio/SDKs/ndk/21.3.6528147/build//../toolchains/llvm/prebuilt/windows-x86_64/sysroot -g -Wno-invalid-command-line-argument -Wno-unused-command-line-argument -D_FORTIFY_SOURCE\u003d2 -fno-exceptions -fno-rtti -fpic -march\u003darmv7-a -mthumb -Oz -DNDEBUG -I\"D:/work/Android_studio/SDKs/OpenCV-android-sdk//sdk/native/jni/include/opencv\" -I\"D:/work/Android_studio/SDKs/OpenCV-android-sdk//sdk/native/jni/include\" -ID:/work/Android_studio/SDKs/ndk/21.3.6528147/build//../sources/cxx-stl/llvm-libc++/include -ID:/work/Android_studio/SDKs/ndk/21.3.6528147/build//../sources/cxx-stl/llvm-libc++abi/include -ID:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/src/main/cpp -frtti -fexceptions -DANDROID -fPIC -DANDROID -fsigned-char -mfloat-abi\u003dsoftfp -mfpu\u003dneon -std\u003dc++11 -nostdinc++ -Wformat -Werror\u003dformat-security -fno-strict-aliasing"
+        }
+      ],
+      "output": "D:\\work\\MADE1\\android\\made_mobile_2020\\HW1\\MobileScaner\\app\\build\\intermediates\\ndkBuild\\release\\obj\\local\\armeabi-v7a\\libImageProcessLib.so"
+    }
+  },
+  "toolchains": {
+    "toolchain-armeabi-v7a": {
+      "cppCompilerExecutable": "D:\\work\\Android_studio\\SDKs\\ndk\\21.3.6528147\\build\\..\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

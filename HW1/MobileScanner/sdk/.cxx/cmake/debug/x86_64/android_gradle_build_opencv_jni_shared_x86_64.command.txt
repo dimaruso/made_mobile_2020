@@ -1,0 +1,7 @@
+Executable : D:\work\Android_studio\SDKs\cmake\3.10.2.4988404\bin\ninja.exe
+arguments : 
+-C
+D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\.cxx\cmake\debug\x86_64
+opencv_jni_shared
+jvmArgs : 
+

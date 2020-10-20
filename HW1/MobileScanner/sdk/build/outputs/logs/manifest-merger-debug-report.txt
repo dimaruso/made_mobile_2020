@@ -1,0 +1,37 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+	package
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:3:7-27
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:1-4:12
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml:2:11-69
+uses-sdk
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		ADDED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml
+		INJECTED from D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\java\AndroidManifest.xml

@@ -1,0 +1,2 @@
+ninja: Entering directory `D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\sdk\.cxx\cmake\debug\x86'
+ninja: no work to do.

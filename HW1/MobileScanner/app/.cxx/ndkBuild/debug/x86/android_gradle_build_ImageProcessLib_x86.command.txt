@@ -1,0 +1,15 @@
+Executable : D:\work\Android_studio\SDKs\ndk\21.3.6528147\ndk-build.cmd
+arguments : 
+NDK_PROJECT_PATH=null
+APP_BUILD_SCRIPT=D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\app\src\main\cpp\Android.mk
+NDK_APPLICATION_MK=D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\app\src\main\cpp\Application.mk
+APP_ABI=x86
+NDK_ALL_ABIS=x86
+NDK_DEBUG=1
+APP_PLATFORM=android-24
+NDK_OUT=D:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/app/build/intermediates/ndkBuild/debug/obj
+NDK_LIBS_OUT=D:\work\MADE1\android\made_mobile_2020\HW1\MobileScaner\app\build\intermediates\ndkBuild\debug\lib
+NDK_APPLICATION_MK:=src/main/cpp/Application.mk
+ImageProcessLib
+jvmArgs : 
+

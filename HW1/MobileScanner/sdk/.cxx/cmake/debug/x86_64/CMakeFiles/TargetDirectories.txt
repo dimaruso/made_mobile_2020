@@ -1,0 +1,3 @@
+D:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/sdk/.cxx/cmake/debug/x86_64/CMakeFiles/opencv_jni_shared.dir
+D:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/sdk/.cxx/cmake/debug/x86_64/CMakeFiles/edit_cache.dir
+D:/work/MADE1/android/made_mobile_2020/HW1/MobileScaner/sdk/.cxx/cmake/debug/x86_64/CMakeFiles/rebuild_cache.dir

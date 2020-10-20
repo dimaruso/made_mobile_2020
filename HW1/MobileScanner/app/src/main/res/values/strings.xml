@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">MobileScanner</string>
+    <string name="action_OpenImage">Open Image/Make a photo</string>
+    <string name="action_Refresh">Refresh</string>
+    <string name="action_GrayScale">To grayscale</string>
+    <string name="action_PerspectiveTransform">Perspective Transform</string>
+    <string name="action_EdgeDetector">Edge detector</string>
+    <string name="action_Median">Median filter</string>
+    <string name="action_Bilateral">Bilateral filter</string>
+    <string name="action_Canny">Canny</string>
+    <string name="action_AddNoise">Add noise</string>
+    <string name="action_Morphology">Morphology</string>
+    <string name="action_Binarization">Binarizations</string>
+    <string name="action_Filters">Filters</string>
+    <string name="action_Binary">To binary</string>
+    <string name="action_Gamma">Gamma correction</string>
+    <string name="action_Contrast">Contrast enhancement</string>
+    <string name="action_Gaussian">Gaussian blur</string>
+    <string name="action_FFT">FFT Filtering</string>
+    <string name="action_EqualizeHisto">Equalize Histogram</string>
+    <string name="action_Transforms">Transforms</string>
+    <string name="action_Rotate90">Rotate 90 deg</string>
+    <string name="action_Rotate180">Rotate 180 deg</string>
+    <string name="action_Rotate270">Rotate 270 deg</string>
+</resources>
