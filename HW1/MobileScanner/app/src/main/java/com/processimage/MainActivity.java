@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private Mat sampledImage=null;
     private Mat curImage=null;
-    private GAPITester tester=null;
     private ArrayList<org.opencv.core.Point> corners=new ArrayList<org.opencv.core.Point>();
     private Uri outputFileUri;
 
@@ -119,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Log.i(TAG, "OpenCV loaded successfully");
                     System.loadLibrary("ImageProcessLib");
-                    if(tester==null)
-                        tester=new GAPITester();
                     Log.i(TAG, "After loading all libraries" );
                     Toast.makeText(getApplicationContext(),
                             "Mobile Scanner loaded successfully",
@@ -141,14 +138,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(tester==null) {
-            if (!OpenCVLoader.initDebug()) {
-                Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-                OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
-            } else {
-                Log.d(TAG, "OpenCV library found inside package. Using it!");
-                mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-            }
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
     @Override
@@ -247,9 +242,14 @@ public class MainActivity extends AppCompatActivity {
                     rotate_270();
                 }
                 return true;
-            case R.id.action_morphology:
+            case R.id.action_Opening:
                 if(isImageLoaded()) {
-                    morphology();
+                    opening();
+                }
+                return true;
+            case R.id.action_Closing:
+                if(isImageLoaded()) {
+                    closing();
                 }
                 return true;
             case R.id.action_edgedetector:
@@ -270,11 +270,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_grayscale:
                 if(isImageLoaded()) {
                     grayscale();
-                }
-                return true;
-            case R.id.action_addnoise:
-                if(isImageLoaded()) {
-                    addNoise();
                 }
                 return true;
             case R.id.action_median:
@@ -441,15 +436,15 @@ public class MainActivity extends AppCompatActivity {
         return inSampleSize;
     }
 
-    private void contrast(){
+    // The parameters were chosen so that the contrast change was noticeable enough.
+    private void contrast() {
         Mat grayImage=new Mat();
         Mat out=new Mat();
         Mat HSV=new Mat();
-
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_RGB2HSV);
-        } catch (Exception e) {
+        } else {
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_GRAY2RGB);
             Imgproc.cvtColor(HSV, grayImage, Imgproc.COLOR_RGB2GRAY);
             Imgproc.cvtColor(HSV, HSV, Imgproc.COLOR_RGB2HSV);
@@ -457,10 +452,10 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Mat> hsv_list = new ArrayList(3);
         Core.split(HSV,hsv_list);
 
-        for(int channel=1;channel<=2;++channel) {
+        for(int channel=1; channel<=2; ++channel) {
             Core.MinMaxLocResult minMaxLocRes = Core.minMaxLoc(hsv_list.get(channel));
-            double minVal = minMaxLocRes.minVal;//+20;
-            double maxVal = minMaxLocRes.maxVal;//-50;
+            double minVal = minMaxLocRes.minVal + 20;
+            double maxVal = minMaxLocRes.maxVal - 50;
             Mat corrected = new Mat();
             hsv_list.get(channel).convertTo(corrected, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
             hsv_list.set(channel, corrected);
@@ -471,7 +466,8 @@ public class MainActivity extends AppCompatActivity {
 
         displayImage(out);
     }
-    private void gammaCorrection(){
+    // The parameters were chosen so that the gamma change was noticeable enough.
+    private void gammaCorrection() {
         double gammaValue = 1.3;
         Mat lookUpTable = new Mat(1, 256, CV_8U);
         byte[] lookUpTableData = new byte[(int) (lookUpTable.total() * lookUpTable.channels())];
@@ -483,16 +479,16 @@ public class MainActivity extends AppCompatActivity {
         Mat out=new Mat();
 
         Mat HSV=new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_RGB2HSV);
-        } catch (Exception e) {
+        } else {
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_GRAY2RGB);
             Imgproc.cvtColor(HSV, HSV, Imgproc.COLOR_RGB2HSV);
         }
         ArrayList<Mat> hsv_list = new ArrayList(3);
         Core.split(HSV,hsv_list);
 
-        for(int channel=1;channel<=2;++channel) {
+        for(int channel=1; channel<=2; ++channel) {
             Mat corrected = new Mat();
             Core.LUT(hsv_list.get(channel), lookUpTable, corrected);
             hsv_list.set(channel, corrected);
@@ -507,12 +503,12 @@ public class MainActivity extends AppCompatActivity {
         iVal = iVal > 255 ? 255 : (iVal < 0 ? 0 : iVal);
         return (byte) iVal;
     }
-    private void equalizeHisto(){
+    private void equalizeHisto() {
         Mat out=new Mat();
         Mat HSV=new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_RGB2HSV);
-        } catch (Exception e) {
+        } else {
             Imgproc.cvtColor(sampledImage, HSV, Imgproc.COLOR_GRAY2RGB);
             Imgproc.cvtColor(HSV, HSV, Imgproc.COLOR_RGB2HSV);
         }
@@ -528,16 +524,17 @@ public class MainActivity extends AppCompatActivity {
 
         displayImage(out);
     }
-    private void blur(){
+    // Filter size selected based on the resolution of the processed photos
+    private void blur() {
         Mat out=new Mat();
-        Imgproc.GaussianBlur(sampledImage,out,new Size(7,7),0,0);
+        Imgproc.GaussianBlur(sampledImage,out,new Size(8,8),0,0);
         displayImage(out);
     }
-    private void fftFilter(){
+    private void fftFilter() {
         Mat grayImage = new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
+        } else {
             grayImage = sampledImage.clone();
         }
         grayImage.convertTo(grayImage, CvType.CV_64FC1);
@@ -576,71 +573,86 @@ public class MainActivity extends AppCompatActivity {
         out.convertTo(out, CvType.CV_8UC1);
         displayImage(out);
     }
-    private void addNoise(){
-        Mat noisyImage=getNoisyImage(true);
-        displayImage(noisyImage);
-    }
-    private void median(){
+    // Filter size selected based on the resolution of the processed photos
+    private void median() {
         Mat noisyImage=getNoisyImage(true);
         Mat blurredImage=new Mat();
-        Imgproc.medianBlur(noisyImage,blurredImage, 7);
+        Imgproc.medianBlur(noisyImage,blurredImage, 8);
         displayImage(blurredImage);
     }
-    private void bilateral(){
-        try {
+    // Filter size selected based on the resolution of the processed photos
+    private void bilateral() {
+        if (sampledImage.channels() != 1) {
             Mat noisyImage=getNoisyImage(false);
             Mat outImage=new Mat();
             Mat rgb=new Mat();
             Imgproc.cvtColor(noisyImage, rgb, Imgproc.COLOR_RGBA2RGB);
-            Imgproc.bilateralFilter(rgb,outImage,9,75,75);
+            Imgproc.bilateralFilter(rgb,outImage,8,75,75);
             displayImage(outImage);
-        } catch (Exception e) {
         }
     }
-    private void grayscale(){
-        Mat grayImage=new Mat();
-        try {
+    private void grayscale() {
+        if (sampledImage.channels() != 1) {
+            Mat grayImage=new Mat();
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
-            grayImage = sampledImage.clone();
+            displayImage(grayImage);
         }
-        displayImage(grayImage);
     }
 
-    private void binary(){
+    // Filter size selected based on the resolution of the processed photos
+    private void binary() {
         Mat binImage = new Mat();
         Mat grayImage = new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
+        } else {
             grayImage = sampledImage.clone();
         }
-        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0,0);
+        Imgproc.GaussianBlur(grayImage,grayImage,new Size(8,8),0,0);
         Imgproc.threshold(grayImage,binImage,0,255,Imgproc.THRESH_BINARY+Imgproc.THRESH_OTSU);
 
         displayImage(binImage);
     }
-    private void morphology(){
+    // The settings were chosen so as to highlight black text well on a white A4 page that completely fills the photo.
+    private void closing() {
         Mat grayImage = new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
+        } else {
             grayImage = sampledImage.clone();
         }
         Mat binImage=new Mat();
         Imgproc.threshold(grayImage,binImage,0,255,Imgproc.THRESH_BINARY+Imgproc.THRESH_OTSU);
-        final int kernel_size=5;
+        final int kernel_size=1;
+        Mat kernel=Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT,new Size(kernel_size,kernel_size));
+        Mat outImage=new Mat();
+        final int num_iterations=1;
+        Imgproc.morphologyEx(binImage,outImage,Imgproc.MORPH_CLOSE,kernel,new Point(-1,-1),num_iterations);
+        displayImage(outImage);
+    }
+    // The settings were chosen so as to highlight white object well on black background.
+    private void opening() {
+        Mat grayImage = new Mat();
+        if (sampledImage.channels() != 1) {
+            Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
+        } else {
+            grayImage = sampledImage.clone();
+        }
+        Mat binImage=new Mat();
+        Imgproc.threshold(grayImage,binImage,0,255,Imgproc.THRESH_BINARY+Imgproc.THRESH_OTSU);
+        final int kernel_size=4;
         Mat kernel=Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT,new Size(kernel_size,kernel_size));
         Mat outImage=new Mat();
         final int num_iterations=1;
         Imgproc.morphologyEx(binImage,outImage,Imgproc.MORPH_OPEN,kernel,new Point(-1,-1),num_iterations);
         displayImage(outImage);
     }
-    private void edgedetector(){
+    // The parameters were chosen so that the number of borders was noticeable enough.
+    private void edgedetector() {
         Mat grayImage=new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
+        } else {
             grayImage = sampledImage.clone();
         }
         Mat xFirstDervative =new Mat(),yFirstDervative =new Mat();
@@ -654,11 +666,12 @@ public class MainActivity extends AppCompatActivity {
         Core.addWeighted(absXD, alpha, absYD, 1-alpha, 0, edgeImage);
         displayImage(edgeImage);
     }
-    private void canny(){
+    // The parameters were chosen so that the number of borders was noticeable enough.
+    private void canny() {
         Mat grayImage=new Mat();
-        try {
+        if (sampledImage.channels() != 1) {
             Imgproc.cvtColor(sampledImage, grayImage, Imgproc.COLOR_RGB2GRAY);
-        } catch (Exception e) {
+        } else {
             grayImage = sampledImage.clone();
         }
         Mat edgeImage=new Mat();
@@ -666,7 +679,7 @@ public class MainActivity extends AppCompatActivity {
         displayImage(edgeImage);
     }
 
-    private void perspectiveTransform(){
+    private void perspectiveTransform() {
         if(corners.size()<4){
             Toast.makeText(getApplicationContext(),
                     "It is necessary to choose 4 corners",
@@ -698,7 +711,7 @@ public class MainActivity extends AppCompatActivity {
         corners.clear();
         displayImage(correctedImage);
     }
-    private void rotate_90(){
+    private void rotate_90() {
         Mat rotImage = new Mat();
         rotImage=sampledImage.t();
         double k = (double) sampledImage.cols() / sampledImage.rows();
@@ -706,14 +719,14 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.resize(rotImage, rotImage,new Size(), k, k);
         displayImage(rotImage);
     }
-    private void rotate_180(){
+    private void rotate_180() {
         Mat rotImage = new Mat();
         rotImage=sampledImage;
         Core.flip(rotImage, rotImage, 0);
         Core.flip(rotImage, rotImage, 1);
         displayImage(rotImage);
     }
-    private void rotate_270(){
+    private void rotate_270() {
         Mat rotImage = new Mat();
         rotImage=sampledImage.t();
         double k = (double) sampledImage.cols() / sampledImage.rows();
@@ -721,7 +734,7 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.resize(rotImage, rotImage,new Size(), k, k);
         displayImage(rotImage);
     }
-    private Mat getNoisyImage(boolean add_noise){
+    private Mat getNoisyImage(boolean add_noise) {
         Mat noisyImage;
         if(add_noise) {
             Mat noise = new Mat(sampledImage.size(), sampledImage.type());
