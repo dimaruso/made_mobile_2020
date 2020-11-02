@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_OpenImage"
+        android:title="@string/action_OpenImage"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_Refresh"
+        android:title="@string/action_Refresh" />
+    <item android:title="@string/action_Transforms">
+        <menu>
+            <item
+                android:id="@+id/action_transformer"
+                android:title="@string/action_PerspectiveTransform"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_Rotate90"
+                android:title="@string/action_Rotate90" />
+            <item
+                android:id="@+id/action_Rotate180"
+                android:title="@string/action_Rotate180" />
+            <item
+                android:id="@+id/action_Rotate270"
+                android:title="@string/action_Rotate270" />
+        </menu>
+    </item>
+    <item android:title="@string/action_Binarization" >
+        <menu >
+            <item
+                android:id="@+id/action_Binary"
+                android:title="@string/action_Binary" />
+            <item
+                android:id="@+id/action_Closing"
+                android:title="@string/action_Closing" />
+            <item
+                android:id="@+id/action_Opening"
+                android:title="@string/action_Opening"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_edgedetector"
+                android:title="@string/action_EdgeDetector"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_canny"
+                android:title="@string/action_Canny"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+    <item android:title="@string/action_Filters" >
+        <menu >
+            <item
+                android:id="@+id/action_grayscale"
+                android:title="@string/action_GrayScale"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_Gamma"
+                android:title="@string/action_Gamma" />
+            <item
+                android:id="@+id/action_Contrast"
+                android:title="@string/action_Contrast" />
+            <item
+                android:id="@+id/action_Gaussian"
+                android:title="@string/action_Gaussian" />
+            <item
+                android:id="@+id/action_FFT"
+                android:title="@string/action_FFT" />
+            <item
+                android:id="@+id/action_Equalize"
+                android:title="@string/action_EqualizeHisto" />
+            <item
+                android:id="@+id/action_median"
+                android:title="@string/action_Median"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_bilateral"
+                android:title="@string/action_Bilateral"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
+</menu>
