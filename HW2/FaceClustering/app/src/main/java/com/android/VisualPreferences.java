@@ -137,7 +137,7 @@ public class VisualPreferences extends Fragment implements OnChartValueSelectedL
                 }
             }
             if(fileLists!=null && !fileLists.isEmpty()) {
-                    Photos photosFragment = new Photos(null);
+                    Photos photosFragment = new Photos();
                     Bundle args = new Bundle();
                     String[] titles=new String[fileLists.size()];
                     int i=0;

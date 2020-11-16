@@ -4,11 +4,9 @@ package com.android;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -28,16 +26,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.android.db.ImageAnalysisResults;
-import com.android.db.TopCategoriesData;
-import com.android.db.RectFloat;
 import com.android.mtcnn.MTCNNModel;
 import com.android.mtcnn.Box;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 
@@ -48,7 +42,8 @@ public class Photos extends Fragment {
     private List<List<String>> photos;
     private int[] currentPhotoIndexes=null;
     private PhotoProcessor photoProcessor=null;
-    private MTCNNModel mtcnnFaceDetector=null;
+    private MTCNNModel mtcnnFaceDetector=MainActivity.mtcnnFaceDetector;
+    private AgeGenderEthnicityTfLiteClassifier facialAttributeClassifier=MainActivity.facialAttributeClassifier;
     private static int minFaceSize=40;
     private ImageView photoView;
     private TextView recResultTextView;
@@ -56,8 +51,7 @@ public class Photos extends Fragment {
     private static final boolean ENABLE_SERVER=false;
     private float x1,x2;
 
-    public Photos(MTCNNModel detector) {
-        mtcnnFaceDetector = detector;
+    public Photos() {
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -210,7 +204,7 @@ public class Photos extends Fragment {
 
         @Override
         protected String doInBackground(Void... params) {
-            StringBuilder text=new StringBuilder();
+            StringBuilder text = new StringBuilder();
             int pos=photosSpinner.getSelectedItemPosition();
             if(pos<0)
                 pos=0;
@@ -225,6 +219,7 @@ public class Photos extends Fragment {
 
                 try{
                     Bitmap bmp=photoProcessor.loadBitmap(filename);
+
                     if(bmp==null)
                         return text.toString();
                     int w=bmp.getWidth();
@@ -236,7 +231,7 @@ public class Photos extends Fragment {
                         }
                         bmp = Bitmap.createScaledBitmap(bmp, w, h, true);
                     }
-                    text.append(filename).append("\n");
+//                    text.append(filename).append("\n");
 
                     Bitmap resizedBitmap=bmp;
                     double minSize=600.0;
@@ -246,8 +241,9 @@ public class Photos extends Fragment {
                         bmp=resizedBitmap;
                     }
                     long startTime = SystemClock.uptimeMillis();
-
-                    Vector<Box> bboxes = mtcnnFaceDetector.detectFaces(resizedBitmap, minFaceSize);
+                    Vector<Box> bboxes = new Vector<Box>();
+                    if (mtcnnFaceDetector != null)
+                        bboxes = mtcnnFaceDetector.detectFaces(resizedBitmap, minFaceSize);
                     Log.i(TAG, "Timecost to run mtcnn: " + Long.toString(SystemClock.uptimeMillis() - startTime));
 
 
@@ -262,39 +258,41 @@ public class Photos extends Fragment {
                     p.setColor(Color.BLUE);
                     p.setStrokeWidth(10);
                     c.drawBitmap(bmp, 0, 0, null);
-                    for (Box box : bboxes) {
 
+                    for (Box box : bboxes) {
                         p.setColor(Color.RED);
                         android.graphics.Rect bbox = new android.graphics.Rect(bmp.getWidth()*box.left() / resizedBitmap.getWidth(),
                                 bmp.getHeight()* box.top() / resizedBitmap.getHeight(),
                                 bmp.getWidth()* box.right() / resizedBitmap.getWidth(),
                                 bmp.getHeight() * box.bottom() / resizedBitmap.getHeight()
                         );
+                        if (bbox.left < 0)
+                            bbox.left = 0;
+                        if (bbox.top < 0)
+                            bbox.top = 0;
+                        if (bbox.right < 0)
+                            bbox.right = 0;
+                        if (bbox.bottom < 0)
+                            bbox.bottom = 0;
 
                         c.drawRect(bbox, p);
 
-//                if(classifier!=null) {
-//                    Bitmap faceBitmap = Bitmap.createBitmap(bmp, bbox.left, bbox.top, bbox.width(), bbox.height());
-//                    Bitmap resultBitmap = Bitmap.createScaledBitmap(faceBitmap, classifier.getImageSizeX(), classifier.getImageSizeY(), false);
-//                    ClassifierResult res = classifier.classifyFrame(resultBitmap);
-//                    c.drawText(res.toString(), bbox.left, Math.max(0, bbox.top - 20), p_text);
-//                    Log.i(TAG, res.toString());
-//                }
+                        if (facialAttributeClassifier != null) {
+                            Bitmap faceBitmap = Bitmap.createBitmap(bmp, bbox.left, bbox.top, bbox.width(), bbox.height());
+                            Bitmap resultBitmap = Bitmap.createScaledBitmap(faceBitmap, facialAttributeClassifier.getImageSizeX(), facialAttributeClassifier.getImageSizeY(), false);
+                            FaceData res = (FaceData) facialAttributeClassifier.classifyFrame(resultBitmap);
+                        }
                     }
-//                    ImageAnalysisResults res = photoProcessor.getImageAnalysisResults(filename, bmp, text, true);
-//                    //res = photoProcessor.getImageAnalysisResultsFromServer(filename, bmp);
-//                    text.append(res.locations.toString()).append("\n\n");
-//
-//                    text.append(res.scene).append("\n");
-//
-//                    if(getActivity()!=null)
-//                        getActivity().runOnUiThread(() -> {
-//                            if(photoView!=null) {
-//                                photoView.setImageBitmap(tempBmp);
-//                            }
-//                        });
+                    text.append(bboxes.size() + " persons detected\n");
+
+                    if(getActivity()!=null)
+                        getActivity().runOnUiThread(() -> {
+                            if(photoView!=null) {
+                                photoView.setImageBitmap(tempBmp);
+                            }
+                        });
                 }
-                catch(Exception e){
+                catch(Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "While  processing image "+filename+" exception thrown: " + e, e);
                 }
@@ -310,7 +308,7 @@ public class Photos extends Fragment {
             }
         }
     }
-    private void processImage(){
+    private void processImage() {
         new ProcessImageTask().execute();
     }
 

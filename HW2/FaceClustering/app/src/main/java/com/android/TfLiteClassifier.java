@@ -24,6 +24,7 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public abstract class TfLiteClassifier {
 
     /** Tag for the {@link Log}. */
@@ -32,10 +33,6 @@ public abstract class TfLiteClassifier {
     /** An instance of the driver class to run model inference with Tensorflow Lite. */
     protected Interpreter tflite;
 
-    private static final boolean useTensorImage=true;
-    /** Input image TensorBuffer. */
-    private TensorImage inputImageBuffer;
-    private ImageProcessor imageProcessor;
     /* Preallocated buffers for storing image data in. */
     private int[] intValues = null;
     protected ByteBuffer imgData = null;
@@ -47,12 +44,6 @@ public abstract class TfLiteClassifier {
     public TfLiteClassifier(final Context context, String model_path) throws IOException {
         //GpuDelegate delegate = new GpuDelegate();
         Interpreter.Options options = (new Interpreter.Options()).setNumThreads(4);//.addDelegate(delegate);
-        if (false) {
-            org.tensorflow.lite.gpu.GpuDelegate.Options opt=new org.tensorflow.lite.gpu.GpuDelegate.Options();
-            opt.setInferencePreference(org.tensorflow.lite.gpu.GpuDelegate.Options.INFERENCE_PREFERENCE_SUSTAINED_SPEED);
-            org.tensorflow.lite.gpu.GpuDelegate delegate = new org.tensorflow.lite.gpu.GpuDelegate();
-            options.addDelegate(delegate);
-        }
 
         MappedByteBuffer tfliteModel= FileUtil.loadMappedFile(context,model_path);
         tflite = new Interpreter(tfliteModel,options);
@@ -60,20 +51,9 @@ public abstract class TfLiteClassifier {
         int[] inputShape=tflite.getInputTensor(0).shape();
         imageSizeX=inputShape[1];
         imageSizeY=inputShape[2];
-        if(useTensorImage) {
-            inputImageBuffer = new TensorImage(tflite.getInputTensor(0).dataType());
-            // Creates processor for the TensorImage.
-            imageProcessor =
-                    new ImageProcessor.Builder()
-                            .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
-                            .add(getPreprocessNormalizeOp())
-                            .build();
-        }
-        else{
-            intValues = new int[imageSizeX * imageSizeY];
-            imgData =ByteBuffer.allocateDirect(imageSizeX*imageSizeY* inputShape[3]*getNumBytesPerChannel());
-            imgData.order(ByteOrder.nativeOrder());
-        }
+        intValues = new int[imageSizeX * imageSizeY];
+        imgData =ByteBuffer.allocateDirect(imageSizeX*imageSizeY* inputShape[3]*getNumBytesPerChannel());
+        imgData.order(ByteOrder.nativeOrder());
 
         int outputCount=tflite.getOutputTensorCount();
         outputs=new float[outputCount][1][];
@@ -87,39 +67,26 @@ public abstract class TfLiteClassifier {
             outputMap.put(i, ith_output);
         }
     }
-    /** Loads input image, and applies preprocessing. */
-    private TensorImage loadImage(final Bitmap bitmap) {
-        // Loads bitmap into a TensorImage.
-        inputImageBuffer.load(bitmap);
-        return imageProcessor.process(inputImageBuffer);
-    }
     protected abstract void addPixelValue(int val);
-    protected abstract TensorOperator getPreprocessNormalizeOp();
 
 
     /** Classifies a frame from the preview stream. */
     public ClassifierResult classifyFrame(Bitmap bitmap) {
         Object[] inputs={null};
-        if(useTensorImage){
-            inputImageBuffer = loadImage(bitmap);
-            inputs[0] = inputImageBuffer.getBuffer();
+        bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        if (imgData == null) {
+            return null;
         }
-        else{
-            bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-            if (imgData == null) {
-                return null;
+        imgData.rewind();
+        // Convert the image to floating point.
+        int pixel = 0;
+        for (int i = 0; i < imageSizeX; ++i) {
+            for (int j = 0; j < imageSizeY; ++j) {
+                final int val = intValues[pixel++];
+                addPixelValue(val);
             }
-            imgData.rewind();
-            // Convert the image to floating point.
-            int pixel = 0;
-            for (int i = 0; i < imageSizeX; ++i) {
-                for (int j = 0; j < imageSizeY; ++j) {
-                    final int val = intValues[pixel++];
-                    addPixelValue(val);
-                }
-            }
-            inputs[0] = imgData;
         }
+        inputs[0] = imgData;
         long startTime = SystemClock.uptimeMillis();
         tflite.runForMultipleInputsOutputs(inputs, outputMap);
         for(int i = 0; i< outputs.length; ++i) {

@@ -19,22 +19,8 @@
         <item>High-level logs</item>
     </string-array>
     <string-array name="category_list">
-        <item>Outdoors</item>
-        <item>Indoors</item>
-        <item>Food</item>
-        <item>Transport</item>
-        <item>Activity</item>
-        <item>Sports</item>
-        <item>Music/instruments</item>
-        <item>Appliances</item>
-        <item>Children</item>
-        <item>Fashion</item>
-        <item>Product/service</item>
-        <item>Planting</item>
-        <item>Pets/animals</item>
-        <item>Culture events</item>
-        <item>Locations</item>
-        <item>Demography</item>
+        <item>All persons</item>
+        <item>Without people</item>
     </string-array>
     <string name="server_config">...</string>
 </resources>
