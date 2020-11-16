@@ -39,7 +39,10 @@ public class MainActivity extends FragmentActivity {
 
     public static MTCNNModel mtcnnFaceDetector=null;
     public static AgeGenderEthnicityTfLiteClassifier facialAttributeClassifier=null;
-    public static final float FACES_CATEGORY_THRESHOLD = 0.09f;
+    public static EmotionTfLiteClassifier emotionClassifier=null; // Clusterisations by emotions
+    public static String usedClassifier="facialAttributeClassifier";
+
+    public static final float FACES_CATEGORY_THRESHOLD = 0.0001f; // for facialAttributeClassifier
     private static int MAX_IMAGE_SIZE=2000;
     private static int minFaceSize=40;
 
@@ -76,6 +79,11 @@ public class MainActivity extends FragmentActivity {
             Log.e(TAG, "Exception initializing MTCNNModel!"+e);
         }
 
+        try {
+            emotionClassifier=new EmotionTfLiteClassifier(getApplicationContext());
+        } catch (final Exception e) {
+            Log.e(TAG, "Exception initializing EmotionTfLiteClassifier!", e);
+        }
         categoryList = getResources().getStringArray(R.array.category_list);
 
         for(int i=0;i<categoryList.length-1;++i){
@@ -141,11 +149,13 @@ public class MainActivity extends FragmentActivity {
                             maxId=facesInfo.get(i).id;
 
                         curErr=0;
-
                         for(int j = 0; j < facesInfo.get(i).features.length; ++j) {
                             curErr += (features[j] - facesInfo.get(i).features[j]) * (features[j] - facesInfo.get(i).features[j]);
                         }
+                        if (facesInfo.get(i).features.length > 0)
+                            curErr /= facesInfo.get(i).features.length;
                         Log.i(TAG, "Cur err: " + curErr);
+
                         if(minErr > curErr) {
                             minErr = curErr;
                             bestId = facesInfo.get(i).id;
@@ -239,7 +249,10 @@ public class MainActivity extends FragmentActivity {
                 if (file.exists()) {
                     long startTime = SystemClock.uptimeMillis();
                     List<FaceFeatures> curFacesInfo=new ArrayList<>();
-                    curFacesInfo = mtcnnDetectionAndAttributesRecognition(filename, facialAttributeClassifier);
+                    if (usedClassifier == "emotionClassifier")
+                        curFacesInfo = mtcnnDetectionAndAttributesRecognition(filename, emotionClassifier);
+                    else
+                        curFacesInfo = mtcnnDetectionAndAttributesRecognition(filename, facialAttributeClassifier);
                     for (FaceFeatures faceInfo: curFacesInfo) {
                         Log.d(TAG, "FaceId old: "+ faceInfo.id);
                     }

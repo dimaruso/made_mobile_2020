@@ -59,6 +59,6 @@ public class FaceData implements ClassifierResult,Serializable {
     }
 
     public String toString(){
-        return String.format("age=%d %s %s",getAge(),isMale()? " male" : " female",getEthnicity(ethnicityScores));
+        return "FaceData";//String.format("age=%d %s %s",getAge(),isMale()? " male" : " female",getEthnicity(ethnicityScores));
     }
 }

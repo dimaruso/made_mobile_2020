@@ -44,6 +44,8 @@ public class Photos extends Fragment {
     private PhotoProcessor photoProcessor=null;
     private MTCNNModel mtcnnFaceDetector=MainActivity.mtcnnFaceDetector;
     private AgeGenderEthnicityTfLiteClassifier facialAttributeClassifier=MainActivity.facialAttributeClassifier;
+    private EmotionTfLiteClassifier emotionClassifier=MainActivity.emotionClassifier;
+    private String usedClassifier=MainActivity.usedClassifier;
     private static int minFaceSize=40;
     private ImageView photoView;
     private TextView recResultTextView;
@@ -276,8 +278,12 @@ public class Photos extends Fragment {
                             bbox.bottom = 0;
 
                         c.drawRect(bbox, p);
-
-                        if (facialAttributeClassifier != null) {
+                        if (usedClassifier == "emotionClassifier") {
+                            Bitmap faceBitmap = Bitmap.createBitmap(bmp, bbox.left, bbox.top, bbox.width(), bbox.height());
+                            Bitmap resultBitmap = Bitmap.createScaledBitmap(faceBitmap, emotionClassifier.getImageSizeX(), emotionClassifier.getImageSizeY(), false);
+                            FaceData res = (FaceData) emotionClassifier.classifyFrame(resultBitmap);
+                        }
+                        else if (usedClassifier == "facialAttributeClassifier") {
                             Bitmap faceBitmap = Bitmap.createBitmap(bmp, bbox.left, bbox.top, bbox.width(), bbox.height());
                             Bitmap resultBitmap = Bitmap.createScaledBitmap(faceBitmap, facialAttributeClassifier.getImageSizeX(), facialAttributeClassifier.getImageSizeY(), false);
                             FaceData res = (FaceData) facialAttributeClassifier.classifyFrame(resultBitmap);
